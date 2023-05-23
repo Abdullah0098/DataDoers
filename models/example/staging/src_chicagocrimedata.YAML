@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: src_chicagocrimedata
+    database: raw  
+    schema: raw_schema  
+    tables:
+      - name: CHICAGOCRIMEDATA
+
