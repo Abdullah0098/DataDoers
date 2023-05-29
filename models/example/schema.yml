@@ -2,20 +2,66 @@
 version: 2
 
 models:
-    - name: my_first_dbt_model
-      description: "A starter dbt model"
+    - name: chicagocrime_details
+      description: "Generic testing - severity check is used to give us only warning when null values are found more than 10 - else it would have stopped testing and thrown error"
       columns:
           - name: id
             description: "The primary key for this table"
             tests:
                 - unique
-                - not_null
+                - not_null:
+                    config:                 
+                      severity: warn
+                      error_if: ">10"
+                      
 
-    - name: my_second_dbt_model
-      description: "A starter dbt model"
+
+
+
+
+    - name: chicagocrime_location
       columns:
-          - name: id
-            description: "The primary key for this table"
-            tests:
-                - unique
-                - not_null
+        - name: location_id
+          tests:
+            - dbt_utils.at_least_one
+#        - name: location_description
+#          tests:
+#            - dbt_utils.non_null_values
+#        - name: location
+#          tests:
+#            - dbt_utils.non_empty_stringss
+
+
+
+    - name: dim_chicagocrimedata
+      description: "Check the unique values in arrest column when the date starts from 2010-12-30"
+      columns:
+        - name: ARREST
+          tests:
+            - unique:
+                config:
+                  where: "date > '2010-12-30'"  
+                  store_failures: true
+                  schema: "DBT_PRACTISE"
+                  severity: error
+                  error_if: '>10'
+
+
+#            - arrestments_true          
+# This is the Singular converted into generic test and arrestments_true is used as a macro and its roots lies in test/generic
+     
+    - name: chicagocrime_arrestment
+      description: "Check the unique values in arrest column when the date starts from 2010-12-30"
+      columns:
+        - name: arrestment_id
+          tests:
+            - not_null           
+#                config:
+#                  severity: error
+#                  error_if: '>10'
+                
+
+
+
+
+
